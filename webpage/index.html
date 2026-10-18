@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogicLoops | Civic Issue Escalation & Accountability</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+
+<body>
+
+    <!-- 1. Navbar: only four links, language switch always visible -->
+    <header class="navbar">
+        <a href="#home" class="logo">CIVIC ACCOUNTABILITY PLATFORM</a>
+        <nav class="nav-links">
+            <a href="#report">Report</a>
+            <a href="#track">Track</a>
+            <a href="#map">Map</a>
+        </nav>
+        <div class="nav-actions">
+            <select id="langSelect" aria-label="Language">
+                <option value="en">EN</option>
+                <option value="hi">HI</option>
+                <option value="pa">PA</option>
+            </select>
+            <button class="btn btn-outline" type="button" id="loginBtn">Login</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- HOME VIEW -->
+        <section id="home" class="view active">
+
+            <!-- 2. Hero: two giant buttons plus search -->
+            <div class="hero">
+                <h1>Report it. Track it. See it fixed.</h1>
+                <div class="hero-buttons">
+                    <a href="#report" class="btn btn-primary btn-large">Report a Problem</a>
+                    <a href="#track" class="btn btn-light btn-large">Track Complaint</a>
+                </div>
+                <div class="search-box">
+                    <input type="search" id="searchInput" list="categoryList"
+                        placeholder="What is the problem? e.g. pothole" aria-label="Search problem">
+                    <datalist id="categoryList">
+                        <option value="Pothole (Roads)"></option>
+                        <option value="Water leak (Water)"></option>
+                        <option value="Power cut (Power)"></option>
+                        <option value="Garbage pile (Garbage)"></option>
+                        <option value="Blocked drain (Drainage)"></option>
+                        <option value="Broken street light (Lights)"></option>
+                    </datalist>
+                </div>
+            </div>
+
+            <!-- 3. Category icons: plain words, tapping starts a report -->
+            <div class="container">
+                <h2 class="section-title">What do you want to report?</h2>
+                <div class="category-grid" id="homeCategories"></div>
+            </div>
+
+            <!-- 4. Live stats (sample data, labelled as such) -->
+            <div class="container">
+                <div class="stats">
+                    <div class="stat-card"><span class="stat-value">24</span><span class="stat-label">Resolved
+                            today</span></div>
+                    <div class="stat-card"><span class="stat-value">86%</span><span class="stat-label">On-time %</span>
+                    </div>
+                    <div class="stat-card"><span class="stat-value">2.3 days</span><span class="stat-label">Avg disposal
+                            time</span></div>
+                </div>
+                <p class="note">Sample data for demo purposes.</p>
+            </div>
+
+            <!-- 5. How it works -->
+            <div class="container">
+                <h2 class="section-title">How it works</h2>
+                <ol class="steps">
+                    <li><span class="step-num">1</span><strong>Snap</strong>
+                        <p>Take a photo of the issue.</p>
+                    </li>
+                    <li><span class="step-num">2</span><strong>Pin</strong>
+                        <p>Mark the exact location.</p>
+                    </li>
+                    <li><span class="step-num">3</span><strong>Track</strong>
+                        <p>Follow the deadline and owner.</p>
+                    </li>
+                    <li><span class="step-num">4</span><strong>Confirm</strong>
+                        <p>Approve the fix or reopen it.</p>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- 6. Nearby map + resolved proof -->
+            <div class="container" id="map">
+                <h2 class="section-title">Nearby issues</h2>
+                <div class="map-box" aria-label="Public issue map">
+                    <span class="pin pin-red" style="top:25%;left:20%;"></span>
+                    <span class="pin pin-amber" style="top:55%;left:45%;"></span>
+                    <span class="pin pin-green" style="top:35%;left:70%;"></span>
+                    <span class="pin pin-red" style="top:70%;left:78%;"></span>
+                    <span class="pin pin-green" style="top:60%;left:15%;"></span>
+                    <div class="legend">
+                        <span><i class="dot dot-red"></i>Overdue</span>
+                        <span><i class="dot dot-amber"></i>In progress</span>
+                        <span><i class="dot dot-green"></i>Resolved</span>
+                    </div>
+                </div>
+
+                <h2 class="section-title">Recently resolved</h2>
+                <div class="resolved-grid" id="resolvedList"></div>
+            </div>
+
+            <!-- 7. Ward leaderboard -->
+            <div class="container">
+                <h2 class="section-title">Top wards</h2>
+                <table class="leaderboard">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Ward</th>
+                            <th>On time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="wardList"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- REPORT VIEW: 3 steps, one action each -->
+        <section id="report" class="view">
+            <div class="container narrow">
+                <h2 class="section-title">Report a problem</h2>
+                <div class="progress">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <p class="step-label" id="stepLabel">Step 1 of 3</p>
+
+                <!-- Step 1: photo and voice -->
+                <div class="report-step active" data-step="1">
+                    <h3>Add a photo</h3>
+                    <label class="upload-box">
+                        <input type="file" id="photoInput" accept="image/*" hidden>
+                        <span id="photoText">Tap to take or upload a photo</span>
+                    </label>
+                    <img id="photoPreview" class="photo-preview" alt="Preview" hidden>
+                    <button class="btn btn-outline btn-block" type="button" id="speakBtn">Speak description</button>
+                    <textarea id="description" rows="3" placeholder="Optional note..."></textarea>
+                </div>
+
+                <!-- Step 2: location and duplicate check -->
+                <div class="report-step" data-step="2">
+                    <h3>Pin the location</h3>
+                    <button class="btn btn-outline btn-block" type="button" id="locateBtn">Use my current
+                        location</button>
+                    <p class="muted" id="locationText">No location set yet.</p>
+                    <div id="duplicateBox" class="duplicate-box" hidden>
+                        <p><strong id="dupCount">3</strong> people already reported this nearby.</p>
+                        <button class="btn btn-primary btn-block" type="button" id="plusOneBtn">+1 me too</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: category and submit -->
+                <div class="report-step" data-step="3">
+                    <h3>Confirm the category</h3>
+                    <div class="category-grid" id="reportCategories"></div>
+                    <p class="muted" id="suggestedText"></p>
+                </div>
+
+                <!-- Ticket confirmation -->
+                <div class="report-step" data-step="4">
+                    <div class="ticket-success">
+                        <h3>Ticket submitted</h3>
+                        <p>Ticket <strong id="newTicketId"></strong></p>
+                        <p>Expected by <strong id="newTicketDue"></strong></p>
+                        <a href="#track" class="btn btn-primary" id="trackNewBtn">Track my issue</a>
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button class="btn btn-outline" type="button" id="prevBtn">Back</button>
+                    <button class="btn btn-primary" type="button" id="nextBtn">Next</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRACK VIEW -->
+        <section id="track" class="view">
+            <div class="container narrow">
+                <h2 class="section-title">Track your complaint</h2>
+                <p class="muted">No login needed. Enter your ticket number and phone.</p>
+                <form id="trackForm" class="track-form">
+                    <input type="text" id="ticketInput" placeholder="Ticket number (e.g. 48872)" required>
+                    <input type="tel" id="phoneInput" placeholder="Phone number" required>
+                    <button class="btn btn-primary btn-block" type="submit">Check status</button>
+                </form>
+                <p id="trackError" class="error-text" hidden>Ticket not found. Check the number and phone.</p>
+
+                <div id="ticketView" hidden>
+                    <div class="ticket-header">
+                        <div>
+                            <h3 id="tId"></h3>
+                            <p class="muted" id="tTitle"></p>
+                        </div>
+                        <span class="status-badge" id="tStatus"></span>
+                    </div>
+                    <p class="countdown" id="tCountdown"></p>
+
+                    <div class="ticket-grid">
+                        <div class="card">
+                            <h4>Timeline</h4>
+                            <ul class="timeline" id="tTimeline"></ul>
+                        </div>
+                        <div class="card">
+                            <h4>Map</h4>
+                            <div class="mini-map"><span class="pin pin-red" style="top:45%;left:50%;"></span></div>
+                            <h4>Responsible officer</h4>
+                            <p id="tOfficer"></p>
+                            <h4>Escalation ladder</h4>
+                            <ol class="ladder" id="tLadder"></ol>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4>Is this fixed?</h4>
+                        <div class="confirm-actions">
+                            <button class="btn btn-primary" type="button" id="confirmBtn">Yes, confirm</button>
+                            <button class="btn btn-outline" type="button" id="reopenBtn">Reopen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- TRACK VIEW -->
+        <section id="track" class="view">
+            <div class="container narrow">
+                <h2 class="section-title">Track your complaint</h2>
+                <div class="search-row">
+                    <input type="text" id="trackInput" placeholder="Enter ticket ID, e.g. LL-1042">
+                    <button class="btn btn-primary" type="button" id="trackBtn">Track</button>
+                </div>
+                <p class="muted">Sample tickets to try: LL-1042, LL-1043</p>
+                <div id="trackResult"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 LogicLoops. Civic issue escalation and accountability.</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
+
+<script src="javascript.js"></script>
+</body>
+
+</html>
